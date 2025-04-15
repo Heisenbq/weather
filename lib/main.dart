@@ -1,110 +1,207 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_flutter_app/repository/hourly_forecast_repository.dart';
+import 'package:test_flutter_app/weather_bloc/weather_bloc.dart';
 
 void main() {
-  runApp(WeatherApp());
+  runApp(const WeatherApp());
 }
 
 class WeatherApp extends StatelessWidget {
+  const WeatherApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Weather App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return BlocProvider(
+      create: (context) => WeatherBloc(HourlyForecastRepository()),
+      child: MaterialApp(
+
+        title: 'Weather App',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: const WeatherScreen(),
       ),
-      home: WeatherScreen(),
     );
   }
 }
 
 class WeatherScreen extends StatelessWidget {
+  const WeatherScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+      backgroundColor: Color(0xFF5480AD),
+      body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Location and current weather
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      'Krasnodar',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '31°',
-                      style: TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Mostly Sunny',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 75),
+              const CurrentWeather(
+                location: 'Krasnodar',
+                temperature: ' 31°',
+                condition: 'Mostly Sunny',
+              ),
+              const SizedBox(height: 24),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Color(0xFF2270BB),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: HourlyForecastList(),
+              ),
+              const SizedBox(height: 32),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF2270BB),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: DailyForecastList(),
                 ),
               ),
-
-              SizedBox(height: 24),
-
-              // Hourly forecast
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildHourlyForecast('Now', '31°'),
-                    _buildHourlyForecast('12PM', '31°'),
-                    _buildHourlyForecast('1PM', '31°'),
-                    _buildHourlyForecast('2PM', '32°'),
-                    _buildHourlyForecast('3PM', '30°'),
-                    _buildHourlyForecast('4PM', '30°'),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: 32),
-
-              // 10-day forecast title
-              Text(
-                '10-DAY FORECAST',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[600],
-                ),
-              ),
-
-              SizedBox(height: 16),
-
-              // Daily forecast items
-              _buildDailyForecast('Today', '16°', '32°'),
-              _buildDailyForecast('Thu', '19°', '31°'),
-              _buildDailyForecast('Fri', '17°', '30°'),
-              _buildDailyForecast('Sat', '16°', '27°'),
-              _buildDailyForecast('Sun', '11°', '20°'),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildHourlyForecast(String time, String temp) {
+class CurrentWeather extends StatelessWidget {
+  final String location;
+  final String temperature;
+  final String condition;
+
+  const CurrentWeather({
+    super.key,
+    required this.location,
+    required this.temperature,
+    required this.condition,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            location,
+            style: const TextStyle(
+              fontSize: 35,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
+            ),
+          ),
+          Text(
+            temperature,
+            style: const TextStyle(
+              fontSize: 60,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
+            ),
+          ),
+          Text(condition, style: TextStyle(fontSize: 20, color: Colors.white)),
+        ],
+      ),
+    );
+  }
+}
+
+class HourlyForecastList extends StatelessWidget {
+  const HourlyForecastList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WeatherBloc, WeatherState>(
+      builder: (context, state) {
+        if (state is WeatherInitial) {
+          context.read<WeatherBloc>().add(WeatherFetch());
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is WeatherLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is WeatherLoadingError) {
+          return Center(child: Text("ERROR OCURED"));
+        }
+
+        if (state is WeatherLoaded) {
+          return SizedBox(
+            height: 90,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: state.forecast.length,
+              itemBuilder: (context, index) {
+                final item = state.forecast[index];
+                return HourlyForecastItem(
+                  time: item.time,
+                  temperature: item.temperature,
+                );
+              },
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
+    );
+  }
+}
+// class HourlyForecastList extends StatelessWidget {
+//   static const List<Map<String, String>> hourlyForecastData = [
+//     {'time': 'Now', 'temperature': '31°'},
+//     {'time': '12PM', 'temperature': '31°'},
+//     {'time': '1PM', 'temperature': '31°'},
+//     {'time': '2PM', 'temperature': '32°'},
+//     {'time': '3PM', 'temperature': '30°'},
+//     {'time': '4PM', 'temperature': '30°'},
+//     {'time': '5PM', 'temperature': '30°'},
+//     {'time': '6PM', 'temperature': '30°'},
+//     {'time': '7PM', 'temperature': '30°'},
+//     {'time': '8PM', 'temperature': '30°'},
+//     {'time': '9PM', 'temperature': '30°'},
+//   ];
+//
+//   const HourlyForecastList({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       height: 90,
+//       child: ListView.builder(
+//         scrollDirection: Axis.horizontal,
+//         itemCount: hourlyForecastData.length,
+//         itemBuilder: (context, index) {
+//           final item = hourlyForecastData[index];
+//           return HourlyForecastItem(
+//             time: item['time']!,
+//             temperature: item['temperature']!,
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
+
+class HourlyForecastItem extends StatelessWidget {
+  final String time;
+  final String temperature;
+
+  const HourlyForecastItem({
+    super.key,
+    required this.time,
+    required this.temperature,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Column(
@@ -113,55 +210,136 @@ class WeatherScreen extends StatelessWidget {
             time,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[600],
+              color: Colors.white,
             ),
           ),
           SizedBox(height: 8),
+          Icon(Icons.wb_sunny, color: Colors.yellow),
+          SizedBox(height: 8),
           Text(
-            temp,
-            style: TextStyle(
+            temperature,
+            style: const TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildDailyForecast(String day, String low, String high) {
+class DailyForecastList extends StatelessWidget {
+  static const List<Map<String, String>> _forecasts = [
+    {'day': 'Today', 'low': '16°', 'high': '32°'},
+    {'day': 'Thu', 'low': '19°', 'high': '31°'},
+    {'day': 'Fri', 'low': '17°', 'high': '30°'},
+    {'day': 'Sat', 'low': '16°', 'high': '27°'},
+    {'day': 'Sun', 'low': '11°', 'high': '20°'},
+    {'day': 'Mon', 'low': '11°', 'high': '20°'},
+    {'day': 'Tue', 'low': '11°', 'high': '20°'},
+    {'day': 'Wed', 'low': '11°', 'high': '20°'},
+    {'day': 'Thu', 'low': '11°', 'high': '20°'},
+    {'day': 'Fri', 'low': '11°', 'high': '20°'},
+  ];
+
+  const DailyForecastList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text(
+          '10-DAY FORECAST',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.blue,
+          ),
+        ),
+        Expanded(
+          child: ListView.separated(
+            physics: const ClampingScrollPhysics(),
+            itemCount: _forecasts.length,
+            itemBuilder: (context, index) {
+              return DailyForecastItem(
+                day: _forecasts[index]['day']!,
+                low: _forecasts[index]['low']!,
+                high: _forecasts[index]['high']!,
+              );
+            },
+            separatorBuilder: (context, index) {
+              return const Divider(thickness: 1, color: Colors.grey);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class DailyForecastItem extends StatelessWidget {
+  final String day;
+  final String low;
+  final String high;
+
+  const DailyForecastItem({
+    super.key,
+    required this.day,
+    required this.low,
+    required this.high,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            flex: 2,
-            child: Text(
-              day,
-              style: TextStyle(
-                fontSize: 18,
-              ),
+            flex: 1,
+            child: Row(
+              children: [
+                Text(
+                  day,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(width: 10),
+              ],
             ),
           ),
+          Expanded(flex: 1, child: Icon(Icons.wb_sunny, color: Colors.yellow)),
+
           Expanded(
             flex: 3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  low,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[600],
+                Text(low, style: TextStyle(fontSize: 18, color: Colors.white)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    height: 3,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.red, Colors.amber, Colors.yellow],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                    ),
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 10),
                 Text(
                   high,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ],
