@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_flutter_app/blocs/current_weather_bloc/current_weather_bloc.dart';
+import 'package:test_flutter_app/blocs/hourly_forecast_bloc/hourly_forecast_bloc.dart';
+import 'package:test_flutter_app/repository/current_weather_repository.dart';
+import 'package:test_flutter_app/repository/daily_forecast_repository.dart';
 import 'package:test_flutter_app/repository/hourly_forecast_repository.dart';
-import 'package:test_flutter_app/weather_bloc/weather_bloc.dart';
+
+import 'blocs/daily_forecast_bloc/daily_forecast_bloc.dart';
 
 void main() {
   runApp(const WeatherApp());
@@ -12,10 +17,19 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WeatherBloc(HourlyForecastRepository()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HourlyForecastBloc>(
+          create: (context) => HourlyForecastBloc(HourlyForecastRepository()),
+        ),
+        BlocProvider<DailyForecastBloc>(
+          create: (context) => DailyForecastBloc(DailyForecastRepository()),
+        ),
+        BlocProvider<CurrentWeatherBloc>(
+          create: (context) => CurrentWeatherBloc(CurrentWeatherRepository()),
+        ),
+      ],
       child: MaterialApp(
-
         title: 'Weather App',
         theme: ThemeData(primarySwatch: Colors.blue),
         home: const WeatherScreen(),
@@ -38,11 +52,7 @@ class WeatherScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 75),
-              const CurrentWeather(
-                location: 'Krasnodar',
-                temperature: ' 31°',
-                condition: 'Mostly Sunny',
-              ),
+              NowWeather(),
               const SizedBox(height: 24),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -71,66 +81,110 @@ class WeatherScreen extends StatelessWidget {
   }
 }
 
-class CurrentWeather extends StatelessWidget {
-  final String location;
-  final String temperature;
-  final String condition;
+class NowWeather extends StatelessWidget {
 
-  const CurrentWeather({
+  const NowWeather({
     super.key,
-    required this.location,
-    required this.temperature,
-    required this.condition,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text(
-            location,
-            style: const TextStyle(
-              fontSize: 35,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-            ),
-          ),
-          Text(
-            temperature,
-            style: const TextStyle(
-              fontSize: 60,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-            ),
-          ),
-          Text(condition, style: TextStyle(fontSize: 20, color: Colors.white)),
-        ],
-      ),
+    return BlocBuilder<CurrentWeatherBloc, CurrentWeatherState>(
+        builder: (context, state) {
+          if (state is CurrentWeatherInitial) {
+            context.read<CurrentWeatherBloc>().add(FetchCurrentWeather());
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is CurrentWeatherLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is CurrentWeatherLoadingError) {
+            return Center(child: Text("ERROR OCURED"));
+          }
+          if (state is CurrentWeatherLoaded) {
+            return Center(
+              child: Column(
+                children: [
+                  Text(state.currentWeather.city,style: TextStyle(fontSize: 35,color: Colors.white),),    
+                  Text(" " + state.currentWeather.temperature, style: TextStyle(fontSize: 45,color: Colors.white),),
+                  Text(state.currentWeather.description, style: TextStyle(fontSize: 25,color: Colors.white),),    
+                ],
+              ),
+            );
+          }
+          return Text("");
+        });
+  }
+}
+
+class DailyForecastList extends StatelessWidget {
+  const DailyForecastList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DailyForecastBloc, DailyForecastState>(
+      builder: (context, state) {
+        if (state is DailyForecastInitial) {
+          context.read<DailyForecastBloc>().add(FetchDailyForecast());
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is DailyForecastLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is DailyForecastLoadingError) {
+          return Center(child: Text("ERROR OCURED"));
+        }
+
+        if (state is DailyForecastLoaded) {
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: state.forecast.length,
+                  itemBuilder: (context, index) {
+                    final item = state.forecast[index];
+                    return DailyForecastItem(
+                      day: item.day,
+                      low: item.lowestTemperature,
+                      high: item.highestTemperature,
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }
 
 class HourlyForecastList extends StatelessWidget {
   const HourlyForecastList({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WeatherBloc, WeatherState>(
+    return BlocBuilder<HourlyForecastBloc, HourlyForecastState>(
       builder: (context, state) {
-        if (state is WeatherInitial) {
-          context.read<WeatherBloc>().add(FetchHourlyForecast());
+        if (state is HourlyForecastInitial) {
+          context.read<HourlyForecastBloc>().add(FetchHourlyForecast());
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state is WeatherLoading) {
+        if (state is HourlyForecastLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state is WeatherLoadingError) {
+        if (state is HourlyForecastLoadingError) {
           return Center(child: Text("ERROR OCURED"));
         }
 
-        if (state is WeatherLoaded) {
+        if (state is HourlyForecastLoaded) {
           return SizedBox(
             height: 90,
             child: ListView.builder(
@@ -153,8 +207,6 @@ class HourlyForecastList extends StatelessWidget {
   }
 }
 
-
-
 class HourlyForecastItem extends StatelessWidget {
   final String time;
   final String temperature;
@@ -171,22 +223,13 @@ class HourlyForecastItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Column(
         children: [
-          Text(
-            time,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white,
-            ),
-          ),
+          Text(time, style: TextStyle(fontSize: 16, color: Colors.white)),
           SizedBox(height: 8),
           Icon(Icons.wb_sunny, color: Colors.yellow),
           SizedBox(height: 8),
           Text(
             temperature,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-            ),
+            style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
         ],
       ),
@@ -194,54 +237,6 @@ class HourlyForecastItem extends StatelessWidget {
   }
 }
 
-class DailyForecastList extends StatelessWidget {
-  static const List<Map<String, String>> _forecasts = [
-    {'day': 'Today', 'low': '16°', 'high': '32°'},
-    {'day': 'Thu', 'low': '19°', 'high': '31°'},
-    {'day': 'Fri', 'low': '17°', 'high': '30°'},
-    {'day': 'Sat', 'low': '16°', 'high': '27°'},
-    {'day': 'Sun', 'low': '11°', 'high': '20°'},
-    {'day': 'Mon', 'low': '11°', 'high': '20°'},
-    {'day': 'Tue', 'low': '11°', 'high': '20°'},
-    {'day': 'Wed', 'low': '11°', 'high': '20°'},
-    {'day': 'Thu', 'low': '11°', 'high': '20°'},
-    {'day': 'Fri', 'low': '11°', 'high': '20°'},
-  ];
-
-  const DailyForecastList({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text(
-          '10-DAY FORECAST',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.blue,
-          ),
-        ),
-        Expanded(
-          child: ListView.separated(
-            physics: const ClampingScrollPhysics(),
-            itemCount: _forecasts.length,
-            itemBuilder: (context, index) {
-              return DailyForecastItem(
-                day: _forecasts[index]['day']!,
-                low: _forecasts[index]['low']!,
-                high: _forecasts[index]['high']!,
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const Divider(thickness: 1, color: Colors.grey);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class DailyForecastItem extends StatelessWidget {
   final String day;
@@ -302,10 +297,7 @@ class DailyForecastItem extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   high,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
+                  style: const TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ],
             ),
