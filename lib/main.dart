@@ -99,14 +99,14 @@ class NowWeather extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is CurrentWeatherLoadingError) {
-            return Center(child: Text("ERROR OCURED"));
+            return Center(child: Text("1"));
           }
           if (state is CurrentWeatherLoaded) {
             return Center(
               child: Column(
                 children: [
                   Text(state.currentWeather.city,style: TextStyle(fontSize: 35,color: Colors.white),),    
-                  Text(" " + state.currentWeather.temperature, style: TextStyle(fontSize: 45,color: Colors.white),),
+                  Text(" " + state.currentWeather.temperature.toString()+"°", style: TextStyle(fontSize: 45,color: Colors.white),),
                   Text(state.currentWeather.description, style: TextStyle(fontSize: 25,color: Colors.white),),    
                 ],
               ),
@@ -194,7 +194,7 @@ class HourlyForecastList extends StatelessWidget {
                 final item = state.forecast[index];
                 return HourlyForecastItem(
                   time: item.time,
-                  temperature: item.temperature,
+                  temperature: item.temperature.toString()+ "°",
                 );
               },
             ),

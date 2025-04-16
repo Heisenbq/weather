@@ -8,4 +8,6 @@ class DailyForecast {
     required this.highestTemperature,
     required this.day,
   });
+
+
 }
