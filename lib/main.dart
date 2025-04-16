@@ -113,13 +113,12 @@ class CurrentWeather extends StatelessWidget {
 
 class HourlyForecastList extends StatelessWidget {
   const HourlyForecastList({super.key});
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WeatherBloc, WeatherState>(
       builder: (context, state) {
         if (state is WeatherInitial) {
-          context.read<WeatherBloc>().add(WeatherFetch());
+          context.read<WeatherBloc>().add(FetchHourlyForecast());
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -153,41 +152,7 @@ class HourlyForecastList extends StatelessWidget {
     );
   }
 }
-// class HourlyForecastList extends StatelessWidget {
-//   static const List<Map<String, String>> hourlyForecastData = [
-//     {'time': 'Now', 'temperature': '31°'},
-//     {'time': '12PM', 'temperature': '31°'},
-//     {'time': '1PM', 'temperature': '31°'},
-//     {'time': '2PM', 'temperature': '32°'},
-//     {'time': '3PM', 'temperature': '30°'},
-//     {'time': '4PM', 'temperature': '30°'},
-//     {'time': '5PM', 'temperature': '30°'},
-//     {'time': '6PM', 'temperature': '30°'},
-//     {'time': '7PM', 'temperature': '30°'},
-//     {'time': '8PM', 'temperature': '30°'},
-//     {'time': '9PM', 'temperature': '30°'},
-//   ];
-//
-//   const HourlyForecastList({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SizedBox(
-//       height: 90,
-//       child: ListView.builder(
-//         scrollDirection: Axis.horizontal,
-//         itemCount: hourlyForecastData.length,
-//         itemBuilder: (context, index) {
-//           final item = hourlyForecastData[index];
-//           return HourlyForecastItem(
-//             time: item['time']!,
-//             temperature: item['temperature']!,
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
+
 
 
 class HourlyForecastItem extends StatelessWidget {

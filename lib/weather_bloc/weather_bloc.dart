@@ -14,13 +14,13 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
 
   WeatherBloc(this.hourlyForecastRepository) : super(WeatherInitial()) {
-    on<WeatherFetch>((event, emit) async {
-      emit(WeatherLoading());
+    on<FetchHourlyForecast>((event, emit) async {
+      emit(HourlyForecastLoading());
       try {
         final forecast = await hourlyForecastRepository.getHourlyForecast();
-        emit(WeatherLoaded(forecast));
+        emit(HourlyForecastLoaded(forecast));
       } catch (e) {
-        emit(WeatherLoadingError());
+        emit(HourlyForecastLoadingError());
       }
     });
   }

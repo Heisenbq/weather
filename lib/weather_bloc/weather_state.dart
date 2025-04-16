@@ -4,12 +4,12 @@ abstract class WeatherState {}
 
 final class WeatherInitial extends WeatherState {}
 
-class WeatherLoading extends WeatherState{}
+class HourlyForecastLoading extends WeatherState{}
 
-class WeatherLoadingError extends WeatherState{}
+class HourlyForecastLoadingError extends WeatherState{}
 
-class WeatherLoaded extends WeatherState{
+class HourlyForecastLoaded extends WeatherState{
   final List<HourlyForecast> forecast;
 
-  WeatherLoaded(this.forecast);
+  HourlyForecastLoaded(this.forecast);
 }
