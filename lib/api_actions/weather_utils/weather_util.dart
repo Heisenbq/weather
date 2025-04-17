@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../model/daily_forecast.dart';
 import '../../model/hourly_forecast.dart';
 
 class WeatherUtil {
@@ -49,4 +50,5 @@ class WeatherUtil {
 
     return interpolated;
   }
+
 }

@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:test_flutter_app/api_actions/weather_utils/weather_util.dart';
 import 'package:test_flutter_app/model/hourly_forecast.dart';
 
 import '../model/current_weather.dart';
+import '../model/daily_forecast.dart';
 
 class WeatherApi {
   static final Dio _dio = Dio();
@@ -25,24 +28,68 @@ class WeatherApi {
     }
   }
 
-  static Future<List<HourlyForecast>> fetch48HourlyForecastByCity(String cityName) async {
-    try{
+  static Future<List<HourlyForecast>> fetch48HourlyForecastByCity(
+      String cityName,) async {
+    try {
       final response = await _dio.get(
         '$_baseUrl/forecast',
-         queryParameters: {
-           'q': cityName,
-           'appid': _apiKey,
-           'units': 'metric', // Для °C
-         },
+        queryParameters: {
+          'q': cityName,
+          'appid': _apiKey,
+          'units': 'metric', // Для °C
+        },
       );
-      final forecast = (response.data['list'] as List)
+      final forecast =
+      (response.data['list'] as List)
           .map((json) => HourlyForecast.fromJson(json))
           .toList();
-      return WeatherUtil.interpolateForecasts(forecast.sublist(0,17));
+      return WeatherUtil.interpolateForecasts(forecast.sublist(0, 17));
     } catch (e) {
       throw Exception('Failed to load forecast: $e');
     }
   }
+
+  static List<List<Map<String, dynamic>>> _groupForecastsByDay(
+      List<dynamic> forecasts,) {
+    final groups = <List<Map<String, dynamic>>>[];
+    List<Map<String, dynamic>> currentDay = [];
+
+    for (final forecast in forecasts.cast<Map<String, dynamic>>()) {
+      final date = forecast['dt_txt'].toString().split(' ')[0];
+
+      if (currentDay.isEmpty ||
+          currentDay.first['dt_txt'].toString().split(' ')[0] == date) {
+        currentDay.add(forecast);
+      } else {
+        groups.add(currentDay);
+        currentDay = [forecast];
+      }
+    }
+
+    if (currentDay.isNotEmpty) {
+      groups.add(currentDay);
+    }
+
+    return groups;
+  }
+
+  static Future<List<DailyForecast>> fetchDailyForecast(String cityName) async {
+    // try {
+    final response = await _dio.get(
+      'https://api.openweathermap.org/data/2.5/forecast',
+      queryParameters: {
+        'q': cityName,
+        'appid': _apiKey,
+        'units': 'metric',
+        'cnt': 40,
+      },
+    );
+
+    final dailyGroups = _groupForecastsByDay(response.data['list']);
+
+    final forecastDays = dailyGroups.map((json) => DailyForecast.fromJson(json)).toList();
+    return forecastDays;
+  }
+
+
 }
-
-

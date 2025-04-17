@@ -14,7 +14,7 @@ class DailyForecastBloc extends Bloc<DailyForecastEvent, DailyForecastState> {
     on<FetchDailyForecast>((event, emit) async {
       emit(DailyForecastLoading());
       try {
-        final forecast = await dailyForecastRepository.getDailyForecast();
+        final forecast = await dailyForecastRepository.getDailyForecast("Moscow");
         emit(DailyForecastLoaded(forecast));
       } catch (e) {
         emit(DailyForecastLoadingError());

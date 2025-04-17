@@ -148,8 +148,9 @@ class DailyForecastList extends StatelessWidget {
                     final item = state.forecast[index];
                     return DailyForecastItem(
                       day: item.day,
-                      low: item.lowestTemperature,
-                      high: item.highestTemperature,
+                      low: item.lowestTemperature.toString(),
+                      high: item.highestTemperature.toString(),
+                      icon: item.getIcon(size: 30),
                     );
                   },
                 ),
@@ -245,12 +246,14 @@ class DailyForecastItem extends StatelessWidget {
   final String day;
   final String low;
   final String high;
+  final Widget icon;
 
   const DailyForecastItem({
     super.key,
     required this.day,
     required this.low,
     required this.high,
+    required this.icon,
   });
 
   @override
@@ -264,22 +267,24 @@ class DailyForecastItem extends StatelessWidget {
             flex: 1,
             child: Row(
               children: [
-                Text(
-                  day,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                Expanded(
+                  child: Text(
+                    day,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                SizedBox(width: 10),
+                SizedBox(),
               ],
             ),
           ),
-          Expanded(flex: 1, child: Icon(Icons.wb_sunny, color: Colors.yellow)),
+          Expanded(flex: 1, child: icon),
 
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
