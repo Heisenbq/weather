@@ -186,7 +186,7 @@ class HourlyForecastList extends StatelessWidget {
 
         if (state is HourlyForecastLoaded) {
           return SizedBox(
-            height: 90,
+            height: 105,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: state.forecast.length,
@@ -195,6 +195,7 @@ class HourlyForecastList extends StatelessWidget {
                 return HourlyForecastItem(
                   time: item.time,
                   temperature: item.temperature.toString()+ "°",
+                  icon: item.getIcon(size: 50),
                 );
               },
             ),
@@ -210,11 +211,13 @@ class HourlyForecastList extends StatelessWidget {
 class HourlyForecastItem extends StatelessWidget {
   final String time;
   final String temperature;
+  final Widget icon;
 
   const HourlyForecastItem({
     super.key,
     required this.time,
     required this.temperature,
+    required this.icon,
   });
 
   @override
@@ -224,9 +227,9 @@ class HourlyForecastItem extends StatelessWidget {
       child: Column(
         children: [
           Text(time, style: TextStyle(fontSize: 16, color: Colors.white)),
-          SizedBox(height: 8),
-          Icon(Icons.wb_sunny, color: Colors.yellow),
-          SizedBox(height: 8),
+          SizedBox(height: 0),
+          icon,
+          SizedBox(height: 3),
           Text(
             temperature,
             style: const TextStyle(fontSize: 18, color: Colors.white),

@@ -4,7 +4,7 @@ import 'package:test_flutter_app/api_actions/weather_utils/weather_util.dart';
 class HourlyForecast {
   final String time;
   final int temperature;
-  final String iconCode; // Добавляем поле для кода иконки
+  final String iconCode;
 
   HourlyForecast({
     required this.time,

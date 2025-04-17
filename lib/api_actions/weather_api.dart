@@ -5,11 +5,11 @@ import 'package:test_flutter_app/model/hourly_forecast.dart';
 import '../model/current_weather.dart';
 
 class WeatherApi {
-  final Dio _dio = Dio();
-  final String _apiKey = 'a0e508f45eed10d76be37cc08bfab391';
-  final String _baseUrl = 'https://api.openweathermap.org/data/2.5';
+  static final Dio _dio = Dio();
+  static final String _apiKey = 'a0e508f45eed10d76be37cc08bfab391';
+  static final String _baseUrl = 'https://api.openweathermap.org/data/2.5';
 
-  Future<CurrentWeather> fetchWeatherByCity(String cityName) async {
+  static Future<CurrentWeather> fetchWeatherByCity(String cityName) async {
     try {
       final response = await _dio.get(
         '$_baseUrl/weather',
@@ -25,7 +25,7 @@ class WeatherApi {
     }
   }
 
-  Future<List<HourlyForecast>> fetch48HourlyForecastByCity(String cityName) async {
+  static Future<List<HourlyForecast>> fetch48HourlyForecastByCity(String cityName) async {
     try{
       final response = await _dio.get(
         '$_baseUrl/forecast',
