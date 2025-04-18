@@ -49,29 +49,6 @@ class WeatherApi {
     }
   }
 
-  static List<List<Map<String, dynamic>>> _groupForecastsByDay(
-      List<dynamic> forecasts,) {
-    final groups = <List<Map<String, dynamic>>>[];
-    List<Map<String, dynamic>> currentDay = [];
-
-    for (final forecast in forecasts.cast<Map<String, dynamic>>()) {
-      final date = forecast['dt_txt'].toString().split(' ')[0];
-
-      if (currentDay.isEmpty ||
-          currentDay.first['dt_txt'].toString().split(' ')[0] == date) {
-        currentDay.add(forecast);
-      } else {
-        groups.add(currentDay);
-        currentDay = [forecast];
-      }
-    }
-
-    if (currentDay.isNotEmpty) {
-      groups.add(currentDay);
-    }
-
-    return groups;
-  }
 
   static Future<List<DailyForecast>> fetchDailyForecast(String cityName) async {
     // try {
@@ -85,7 +62,7 @@ class WeatherApi {
       },
     );
 
-    final dailyGroups = _groupForecastsByDay(response.data['list']);
+    final dailyGroups = WeatherUtil.groupForecastsByDay(response.data['list']);
 
     final forecastDays = dailyGroups.map((json) => DailyForecast.fromJson(json)).toList();
     return forecastDays;

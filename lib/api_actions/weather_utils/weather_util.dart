@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../model/daily_forecast.dart';
 import '../../model/hourly_forecast.dart';
 
 class WeatherUtil {
@@ -12,6 +11,30 @@ class WeatherUtil {
       height: size,
       fit: BoxFit.contain,
     );
+  }
+
+  static List<List<Map<String, dynamic>>> groupForecastsByDay(
+      List<dynamic> forecasts,) {
+    final groups = <List<Map<String, dynamic>>>[];
+    List<Map<String, dynamic>> currentDay = [];
+
+    for (final forecast in forecasts.cast<Map<String, dynamic>>()) {
+      final date = forecast['dt_txt'].toString().split(' ')[0];
+
+      if (currentDay.isEmpty ||
+          currentDay.first['dt_txt'].toString().split(' ')[0] == date) {
+        currentDay.add(forecast);
+      } else {
+        groups.add(currentDay);
+        currentDay = [forecast];
+      }
+    }
+
+    if (currentDay.isNotEmpty) {
+      groups.add(currentDay);
+    }
+
+    return groups;
   }
 
 
@@ -26,7 +49,6 @@ class WeatherUtil {
 
       // Извлекаем час из строки "HH:00"
       final currentHour = int.parse(current.time.split(':')[0]);
-      final nextHour = int.parse(next.time.split(':')[0]);
       final currentIcon = current.iconCode;
       final nextIcon = next.iconCode;
 

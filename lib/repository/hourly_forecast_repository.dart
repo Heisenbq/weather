@@ -5,8 +5,4 @@ class HourlyForecastRepository{
   Future<List<HourlyForecast>> getHourlyForecast(String cityName) async {
     return await WeatherApi.fetch48HourlyForecastByCity(cityName);
   }
-
-  // Future<List<HourlyForecast>> getForecast() async {
-  //   return [HourlyForecast(time: '123', temperature: '12313')];
-  // }
 }
