@@ -21,4 +21,18 @@ class WeatherRepository {
   Future<List<DailyForecast>> getDailyForecast(String cityName) async {
     return await weatherApi.fetchDailyForecastByCity(cityName);
   }
+
+  Future<CurrentWeather> getCurrentWeatherByCoordinates(double lat,double lon) async {
+    return await weatherApi.fetchWeatherByCoordinates(lat,lon);
+  }
+
+
+  Future<List<HourlyForecast>> getHourlyForecastByCoordinates(double lat,double lon) async {
+    return await weatherApi.fetch48HourlyForecastByCoordinates(lat,lon);
+  }
+
+  Future<List<DailyForecast>> getDailyForecastByCoordinates(double lat,double lon) async {
+    return await weatherApi.fetchDailyForecastByCoordinates(lat,lon);
+  }
+
 }
