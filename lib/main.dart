@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_flutter_app/api_actions/weather_api.dart';
 import 'package:test_flutter_app/blocs/current_weather_bloc/current_weather_bloc.dart';
 import 'package:test_flutter_app/blocs/hourly_forecast_bloc/hourly_forecast_bloc.dart';
 import 'package:test_flutter_app/repository/weather_repository.dart';
@@ -21,13 +22,13 @@ class WeatherApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<HourlyForecastBloc>(
-          create: (context) => HourlyForecastBloc(WeatherRepository()),
+          create: (context) => HourlyForecastBloc(WeatherRepository(WeatherApi.instance)),
         ),
         BlocProvider<DailyForecastBloc>(
-          create: (context) => DailyForecastBloc(WeatherRepository()),
+          create: (context) => DailyForecastBloc(WeatherRepository(WeatherApi.instance)),
         ),
         BlocProvider<CurrentWeatherBloc>(
-          create: (context) => CurrentWeatherBloc(WeatherRepository()),
+          create: (context) => CurrentWeatherBloc(WeatherRepository(WeatherApi.instance)),
         ),
       ],
       child: MaterialApp(

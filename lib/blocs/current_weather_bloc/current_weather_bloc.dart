@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:test_flutter_app/api_actions/weather_api.dart';
 import 'package:test_flutter_app/model/current_weather.dart';
-import 'package:test_flutter_app/repository/current_weather_repository.dart';
 
 import '../../repository/weather_repository.dart';
 

@@ -6,11 +6,15 @@ import '../model/current_weather.dart';
 import '../model/daily_forecast.dart';
 
 class WeatherApi {
-  static final Dio _dio = Dio();
-  static final String _apiKey = 'a0e508f45eed10d76be37cc08bfab391';
-  static final String _baseUrl = 'https://api.openweathermap.org/data/2.5';
+  WeatherApi._internal();
+  static final WeatherApi _instance = WeatherApi._internal();
+  static WeatherApi get instance => _instance;
 
-  static Future<CurrentWeather> fetchWeatherByCity(String cityName) async {
+  final Dio _dio = Dio();
+  final String _apiKey = 'a0e508f45eed10d76be37cc08bfab391';
+  final String _baseUrl = 'https://api.openweathermap.org/data/2.5';
+
+  Future<CurrentWeather> fetchWeatherByCity(String cityName) async {
     try {
       final response = await _dio.get(
         '$_baseUrl/weather',
@@ -28,7 +32,7 @@ class WeatherApi {
     }
   }
 
-  static Future<List<HourlyForecast>> fetch48HourlyForecastByCity(
+  Future<List<HourlyForecast>> fetch48HourlyForecastByCity(
     String cityName,
   ) async {
     try {
@@ -52,7 +56,7 @@ class WeatherApi {
     }
   }
 
-  static Future<List<DailyForecast>> fetchDailyForecast(String cityName) async {
+  Future<List<DailyForecast>> fetchDailyForecast(String cityName) async {
     try {
       final response = await _dio.get(
         'https://api.openweathermap.org/data/2.5/forecast',

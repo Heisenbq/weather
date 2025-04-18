@@ -4,15 +4,21 @@ import '../model/daily_forecast.dart';
 import '../model/hourly_forecast.dart';
 
 class WeatherRepository {
+
+  final WeatherApi weatherApi;
+
+
+  WeatherRepository(this.weatherApi);
+
   Future<CurrentWeather> getCurrentWeather(String cityName) async {
-    return await WeatherApi.fetchWeatherByCity(cityName);
+    return await weatherApi.fetchWeatherByCity(cityName);
   }
 
   Future<List<HourlyForecast>> getHourlyForecast(String cityName) async {
-    return await WeatherApi.fetch48HourlyForecastByCity(cityName);
+    return await weatherApi.fetch48HourlyForecastByCity(cityName);
   }
 
   Future<List<DailyForecast>> getDailyForecast(String cityName) async {
-    return await WeatherApi.fetchDailyForecast(cityName);
+    return await weatherApi.fetchDailyForecast(cityName);
   }
 }
