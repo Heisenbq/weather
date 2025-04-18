@@ -3,11 +3,13 @@ import 'package:test_flutter_app/api_actions/weather_api.dart';
 import 'package:test_flutter_app/model/current_weather.dart';
 import 'package:test_flutter_app/repository/current_weather_repository.dart';
 
+import '../../repository/weather_repository.dart';
+
 part 'current_weather_event.dart';
 part 'current_weather_state.dart';
 
 class CurrentWeatherBloc extends Bloc<CurrentWeatherEvent, CurrentWeatherState> {
-  final CurrentWeatherRepository currentWeatherRepository;
+  final WeatherRepository currentWeatherRepository;
 
   CurrentWeatherBloc(this.currentWeatherRepository) : super(CurrentWeatherInitial()) {
     on<FetchCurrentWeather>((event, emit) async {

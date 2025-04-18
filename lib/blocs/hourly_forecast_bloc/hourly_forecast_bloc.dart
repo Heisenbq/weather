@@ -3,13 +3,14 @@ import 'package:bloc/bloc.dart';
 import '../../api_actions/weather_api.dart';
 import '../../model/hourly_forecast.dart';
 import '../../repository/hourly_forecast_repository.dart';
+import '../../repository/weather_repository.dart';
 
 part 'hourly_forecast_event.dart';
 part 'hourly_forecast_state.dart';
 
 class HourlyForecastBloc extends Bloc<HourlyForecastEvent, HourlyForecastState> {
 
-  final HourlyForecastRepository hourlyForecastRepository;
+  final WeatherRepository hourlyForecastRepository;
 
   HourlyForecastBloc(this.hourlyForecastRepository) : super(HourlyForecastInitial()) {
     on<FetchHourlyForecast>((event, emit) async {
