@@ -13,7 +13,7 @@ class CurrentWeatherBloc extends Bloc<CurrentWeatherEvent, CurrentWeatherState> 
     on<FetchCurrentWeather>((event, emit) async {
       emit(CurrentWeatherLoading());
       try{
-        final currentWeather = await currentWeatherRepository.getCurrentWeather("Moscow");
+        final currentWeather = await currentWeatherRepository.getCurrentWeather(event.city);
         emit(CurrentWeatherLoaded(currentWeather));
       }catch (e){
         emit(CurrentWeatherLoadingError(e.toString()));

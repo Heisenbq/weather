@@ -7,7 +7,9 @@ import '../model/daily_forecast.dart';
 
 class WeatherApi {
   WeatherApi._internal();
+
   static final WeatherApi _instance = WeatherApi._internal();
+
   static WeatherApi get instance => _instance;
 
   final Dio _dio = Dio();
@@ -20,6 +22,28 @@ class WeatherApi {
         '$_baseUrl/weather',
         queryParameters: {
           'q': cityName,
+          'appid': _apiKey,
+          'units': 'metric', // Для °C
+        },
+      );
+      return CurrentWeather.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception('Ошибка: ${e.response?.data['message'] ?? e.message}');
+    } catch (e) {
+      throw Exception('Failed to load forecast: $e');
+    }
+  }
+
+  Future<CurrentWeather> fetchWeatherByCoordinates(
+    double lat,
+    double lon,
+  ) async {
+    try {
+      final response = await _dio.get(
+        '$_baseUrl/weather',
+        queryParameters: {
+          'lat': lat,
+          'lon': lon,
           'appid': _apiKey,
           'units': 'metric', // Для °C
         },
@@ -56,7 +80,30 @@ class WeatherApi {
     }
   }
 
-  Future<List<DailyForecast>> fetchDailyForecast(String cityName) async {
+  Future<List<HourlyForecast>> fetch48HourlyForecastByCoordinates(double lat, double lon) async {
+    try {
+      final response = await _dio.get(
+        '$_baseUrl/forecast',
+        queryParameters: {
+          'lat': lat,
+          'lon': lon,
+          'appid': _apiKey,
+          'units': 'metric', // Для °C
+        },
+      );
+      final forecast =
+          (response.data['list'] as List)
+              .map((json) => HourlyForecast.fromJson(json))
+              .toList();
+      return WeatherUtil.interpolateForecasts(forecast.sublist(0, 17));
+    } on DioException catch (e) {
+      throw Exception('Ошибка: ${e.response?.data['message'] ?? e.message}');
+    } catch (e) {
+      throw Exception('Failed to load forecast: $e');
+    }
+  }
+
+  Future<List<DailyForecast>> fetchDailyForecastByCity(String cityName) async {
     try {
       final response = await _dio.get(
         'https://api.openweathermap.org/data/2.5/forecast',
@@ -74,6 +121,34 @@ class WeatherApi {
 
       final forecastDays =
           dailyGroups.map((json) => DailyForecast.fromJson(json)).toList();
+
+      return forecastDays;
+    } on DioException catch (e) {
+      throw Exception('Ошибка: ${e.response?.data['message'] ?? e.message}');
+    } catch (e) {
+      throw Exception('Failed to load forecast: $e');
+    }
+  }
+
+  Future<List<DailyForecast>> fetchDailyForecastByCoordinates(double lat, double lon) async {
+    try {
+      final response = await _dio.get(
+        'https://api.openweathermap.org/data/2.5/forecast',
+        queryParameters: {
+          'lat': lat,
+          'lon': lon,
+          'appid': _apiKey,
+          'units': 'metric',
+          'cnt': 40,
+        },
+      );
+
+      final dailyGroups = WeatherUtil.groupForecastsByDay(
+        response.data['list'],
+      );
+
+      final forecastDays =
+      dailyGroups.map((json) => DailyForecast.fromJson(json)).toList();
 
       return forecastDays;
     } on DioException catch (e) {

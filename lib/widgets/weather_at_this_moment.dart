@@ -25,7 +25,7 @@ class WeatherAtThisMoment extends StatelessWidget {
   }
 
   Widget _handleInitialState(BuildContext context) {
-    context.read<CurrentWeatherBloc>().add(FetchCurrentWeather());
+    context.read<CurrentWeatherBloc>().add(FetchCurrentWeather("Washington"));
     return const Center(child: CircularProgressIndicator());
   }
   Widget _showCurrentWeather(CurrentWeather currentWeather) {

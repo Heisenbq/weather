@@ -16,7 +16,7 @@ class HourlyForecastBloc extends Bloc<HourlyForecastEvent, HourlyForecastState> 
       emit(HourlyForecastLoading());
       try {
         // final forecast = await hourlyForecastRepository.getHourlyForecast();
-        final forecast = await hourlyForecastRepository.getHourlyForecast("Moscow");
+        final forecast = await hourlyForecastRepository.getHourlyForecast(event.city);
         emit(HourlyForecastLoaded(forecast));
       } catch (e) {
         emit(HourlyForecastLoadingError());

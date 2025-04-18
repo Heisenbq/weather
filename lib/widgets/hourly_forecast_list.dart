@@ -22,7 +22,7 @@ class HourlyForecastList extends StatelessWidget {
     );
   }
   Widget _handleInitialState(BuildContext context) {
-    context.read<HourlyForecastBloc>().add(FetchHourlyForecast());
+    context.read<HourlyForecastBloc>().add(FetchHourlyForecast("Washington"));
     return const Center(child: CircularProgressIndicator());
   }
   Widget _buildForecastList(List<HourlyForecast> forecast) {

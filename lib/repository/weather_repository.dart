@@ -19,6 +19,6 @@ class WeatherRepository {
   }
 
   Future<List<DailyForecast>> getDailyForecast(String cityName) async {
-    return await weatherApi.fetchDailyForecast(cityName);
+    return await weatherApi.fetchDailyForecastByCity(cityName);
   }
 }
