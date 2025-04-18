@@ -29,14 +29,24 @@ class WeatherAtThisMoment extends StatelessWidget {
     return const Center(child: CircularProgressIndicator());
   }
   Widget _showCurrentWeather(CurrentWeather currentWeather) {
-    return Center(
-            child: Column(
-              children: [
-                Text(currentWeather.city,style: TextStyle(fontSize: 35,color: Colors.white),),
-                Text(" ${currentWeather.temperature}°", style: TextStyle(fontSize: 45,color: Colors.white),),
-                Text(currentWeather.description, style: TextStyle(fontSize: 25,color: Colors.white),),
-              ],
-            ),
-          );
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: Center(child: Text(currentWeather.city,style: TextStyle(fontSize: 35,color: Colors.white),))),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: Center(child: Text(" ${currentWeather.temperature}°", style: TextStyle(fontSize: 45,color: Colors.white),))),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: Center(child: Text(currentWeather.description, style: TextStyle(fontSize: 25,color: Colors.white),))),
+          ],
+        ),
+      ],
+    );
   }
 }
