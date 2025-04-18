@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/daily_forecast_bloc/daily_forecast_bloc.dart';
+import '../model/daily_forecast.dart';
 
 class DailyForecastList extends StatelessWidget {
   const DailyForecastList({super.key});
@@ -10,47 +11,48 @@ class DailyForecastList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DailyForecastBloc, DailyForecastState>(
       builder: (context, state) {
-        if (state is DailyForecastInitial) {
-          context.read<DailyForecastBloc>().add(FetchDailyForecast());
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state is DailyForecastLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state is DailyForecastLoadingError) {
-          return Center(child: Text("ERROR OCURED"));
-        }
-
-        if (state is DailyForecastLoaded) {
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: state.forecast.length,
-                  itemBuilder: (context, index) {
-                    final item = state.forecast[index];
-                    return _DailyForecastItem(
-                      day: item.day,
-                      low: item.lowestTemperature.toString(),
-                      high: item.highestTemperature.toString(),
-                      icon: item.getIcon(size: 30),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        }
-
-        return const SizedBox.shrink();
+        return switch (state) {
+          DailyForecastInitial() => _handleInitialState(context),
+          DailyForecastLoading() => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          DailyForecastLoadingError() => const Center(
+            child: Text("ERROR OCCURRED"),
+          ),
+          DailyForecastLoaded() => _buildForecastList(state.forecast),
+          _ => const SizedBox.shrink(),
+        };
       },
     );
   }
-}
 
+  Widget _handleInitialState(BuildContext context) {
+    context.read<DailyForecastBloc>().add(FetchDailyForecast());
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildForecastList(List<DailyForecast> forecast) {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            physics: const ClampingScrollPhysics(),
+            itemCount: forecast.length,
+            itemBuilder: (context, index) {
+              final item = forecast[index];
+              return _DailyForecastItem(
+                day: item.day,
+                low: item.lowestTemperature.toString(),
+                high: item.highestTemperature.toString(),
+                icon: item.getIcon(size: 30),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class _DailyForecastItem extends StatelessWidget {
   final String day;
@@ -97,7 +99,10 @@ class _DailyForecastItem extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text("$low°", style: TextStyle(fontSize: 18, color: Colors.white)),
+                Text(
+                  "$low°",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Container(

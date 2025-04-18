@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_flutter_app/model/hourly_forecast.dart';
 
 import '../blocs/hourly_forecast_bloc/hourly_forecast_bloc.dart';
 
@@ -9,41 +10,37 @@ class HourlyForecastList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HourlyForecastBloc, HourlyForecastState>(
-      builder: (context, state) {
-        if (state is HourlyForecastInitial) {
-          context.read<HourlyForecastBloc>().add(FetchHourlyForecast());
-          return const Center(child: CircularProgressIndicator());
+        builder: (context, state) {
+          return switch (state) {
+            HourlyForecastInitial() => _handleInitialState(context),
+            HourlyForecastLoading() => const Center(child: CircularProgressIndicator()),
+            HourlyForecastLoadingError() => const Center(child: Text("ERROR OCCURRED")),
+            HourlyForecastLoaded() => _buildForecastList(state.forecast),
+            _ => const SizedBox.shrink(),
+          };
         }
-
-        if (state is HourlyForecastLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state is HourlyForecastLoadingError) {
-          return Center(child: Text("ERROR OCURED"));
-        }
-
-        if (state is HourlyForecastLoaded) {
-          return SizedBox(
-            height: 105,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: state.forecast.length,
-              itemBuilder: (context, index) {
-                final item = state.forecast[index];
-                return _HourlyForecastItem(
-                  time: item.time,
-                  temperature: "${item.temperature}°",
-                  icon: item.getIcon(size: 50),
-                );
-              },
-            ),
-          );
-        }
-
-        return const SizedBox.shrink();
-      },
     );
+  }
+  Widget _handleInitialState(BuildContext context) {
+    context.read<HourlyForecastBloc>().add(FetchHourlyForecast());
+    return const Center(child: CircularProgressIndicator());
+  }
+  Widget _buildForecastList(List<HourlyForecast> forecast) {
+      return SizedBox(
+        height: 105,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: forecast.length,
+          itemBuilder: (context, index) {
+            final item = forecast[index];
+            return _HourlyForecastItem(
+              time: item.time,
+              temperature: "${item.temperature}°",
+              icon: item.getIcon(size: 50),
+            );
+          },
+        ),
+      );
   }
 }
 
