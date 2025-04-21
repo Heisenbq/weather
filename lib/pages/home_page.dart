@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:test_flutter_app/pages/weather_page.dart';
 import 'package:test_flutter_app/repository/city_repository.dart';
+import 'package:test_flutter_app/widgets/city_search_widget.dart';
 
 import '../model/city.dart';
 
-class HomePage extends StatelessWidget {
-  List<City> cities = CityRepository().getAddedCities();
+class HomePage extends StatefulWidget {
+
+  final CityRepository cityRepository;
+
+  const HomePage({super.key, required this.cityRepository});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+
   @override
   Widget build(BuildContext context) {
+    List<City> cities = widget.cityRepository.cities;
+    print(cities);
     return Scaffold(
       backgroundColor: Colors.black38,
       body: SafeArea(
@@ -15,6 +29,15 @@ class HomePage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
+
+              Expanded(
+                child: CitySearchWidget(onCitySelected: (city) {
+                  widget.cityRepository.addCity(city);
+                  setState(() {
+                  });
+                },),
+              ),
+              // CitySearchWidget(),
               Row(
                 children: [
                   Expanded(
@@ -54,7 +77,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
 }
 
 
@@ -71,7 +93,7 @@ class _CityCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      color: Colors.white70,
+      color: Colors.lightBlue,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,

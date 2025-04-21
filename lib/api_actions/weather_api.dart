@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:test_flutter_app/api_actions/weather_utils/weather_util.dart';
 import 'package:test_flutter_app/model/hourly_forecast.dart';
 
+import '../model/city.dart';
 import '../model/current_weather.dart';
 import '../model/daily_forecast.dart';
 
@@ -13,6 +14,22 @@ class WeatherApi {
   final Dio _dio = Dio();
   final String _apiKey = 'a0e508f45eed10d76be37cc08bfab391';
   final String _baseUrl = 'https://api.openweathermap.org/data/2.5';
+
+
+  Future<List<City>> searchCities(String query) async {
+    final response = await _dio.get(
+      'http://api.openweathermap.org/geo/1.0/direct',
+      queryParameters: {
+        'q': query,
+        'limit': 10,
+        'appid': _apiKey,
+      },
+    );
+
+    final List data = response.data;
+
+    return data.map((e) => City.fromJson(e)).toList();
+  }
 
   Future<CurrentWeather> fetchWeatherByCity(String cityName) async {
     try {

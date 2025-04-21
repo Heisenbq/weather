@@ -3,11 +3,21 @@ import 'dart:ui';
 class City {
   final String name;
   final String country;
-  final String assetIcon;
+
 
   City({
     required this.name,
     required this.country,
-    required this.assetIcon,
   });
+
+
+  factory City.fromJson(Map<String, dynamic> json) {
+    return City(
+      name: json['name'] ?? '',
+      country: json['country'] ?? '',
+    );
+  }
+
+  @override
+  String toString() => '$name, $country';
 }
