@@ -4,20 +4,32 @@ import 'package:test_flutter_app/model/current_weather.dart';
 
 import '../blocs/current_weather_bloc/current_weather_bloc.dart';
 
-class WeatherAtThisMoment extends StatelessWidget {
-  String city;
+class WeatherAtThisMoment extends StatefulWidget {
+  final String city;
 
-  WeatherAtThisMoment({
+  const WeatherAtThisMoment({
     required this.city,
     super.key,
   });
+
+  @override
+  State<WeatherAtThisMoment> createState() => _WeatherAtThisMomentState();
+}
+
+class _WeatherAtThisMomentState extends State<WeatherAtThisMoment> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CurrentWeatherBloc>().add(FetchCurrentWeather(widget.city));
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CurrentWeatherBloc, CurrentWeatherState>(
         builder: (context, state) {
           return switch (state) {
-            CurrentWeatherInitial() => _handleInitialState(context),
+            CurrentWeatherInitial() => const Center(child: CircularProgressIndicator()),
             CurrentWeatherLoading() => const Center(child: CircularProgressIndicator()),
             CurrentWeatherLoadingError() => const Center(child: Text("1")),
             CurrentWeatherLoaded() => _showCurrentWeather(state.currentWeather),
@@ -26,10 +38,6 @@ class WeatherAtThisMoment extends StatelessWidget {
         });
   }
 
-  Widget _handleInitialState(BuildContext context) {
-    context.read<CurrentWeatherBloc>().add(FetchCurrentWeather(city));
-    return const Center(child: CircularProgressIndicator());
-  }
   Widget _showCurrentWeather(CurrentWeather currentWeather) {
     return Column(
       children: [

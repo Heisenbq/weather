@@ -33,7 +33,6 @@ class _WeatherPageState extends State<WeatherPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 75),
-                Text("${widget.city}"),
                 WeatherAtThisMoment(city: widget.city),
                 const SizedBox(height: 24),
                 Container(

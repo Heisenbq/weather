@@ -4,16 +4,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/daily_forecast_bloc/daily_forecast_bloc.dart';
 import '../model/daily_forecast.dart';
 
-class DailyForecastList extends StatelessWidget {
+class DailyForecastList extends StatefulWidget {
   final String city;
   const DailyForecastList({required this.city, super.key});
+
+  @override
+  State<DailyForecastList> createState() => _DailyForecastListState();
+}
+
+class _DailyForecastListState extends State<DailyForecastList> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<DailyForecastBloc>().add(FetchDailyForecast(widget.city));
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DailyForecastBloc, DailyForecastState>(
       builder: (context, state) {
         return switch (state) {
-          DailyForecastInitial() => _handleInitialState(context),
+          DailyForecastInitial() => const Center(child: CircularProgressIndicator()),
           DailyForecastLoading() => const Center(
             child: CircularProgressIndicator(),
           ),
@@ -25,11 +38,6 @@ class DailyForecastList extends StatelessWidget {
         };
       },
     );
-  }
-
-  Widget _handleInitialState(BuildContext context) {
-    context.read<DailyForecastBloc>().add(FetchDailyForecast(city));
-    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildForecastList(List<DailyForecast> forecast) {
