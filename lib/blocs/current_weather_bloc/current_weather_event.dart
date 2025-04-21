@@ -3,7 +3,7 @@ part of 'current_weather_bloc.dart';
 abstract class CurrentWeatherEvent {}
 
 class FetchCurrentWeather extends CurrentWeatherEvent{
-  final String city;
+  final String? city;
 
-  FetchCurrentWeather(this.city);
+  FetchCurrentWeather([this.city]);
 }

@@ -20,15 +20,9 @@ class DailyForecastBloc extends Bloc<DailyForecastEvent, DailyForecastState> {
           forecast = await dailyForecastRepository.getDailyForecast(event.city!);
         }
         else {
-          LocationService
-          forecast = await dailyForecastRepository.getDailyForecastByCoordinates(lat, lon)
+          final position = await LocationService.getCurrentPosition();
+          forecast = await dailyForecastRepository.getDailyForecastByCoordinates(position.latitude, position.longitude);
         }
-        // final position = await LocationService.getCurrentPosition();
-        // final city = await LocationService.getCityName(
-        //   position.latitude,
-        //   position.longitude,
-        // );
-        // final forecast = await dailyForecastRepository.getDailyForecast(city);
         emit(DailyForecastLoaded(forecast));
       } catch (e) {
         emit(DailyForecastLoadingError());

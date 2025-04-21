@@ -15,14 +15,16 @@ class HourlyForecastBloc extends Bloc<HourlyForecastEvent, HourlyForecastState> 
   HourlyForecastBloc(this.hourlyForecastRepository) : super(HourlyForecastInitial()) {
     on<FetchHourlyForecast>((event, emit) async {
       emit(HourlyForecastLoading());
+
       try {
-        // final position = await LocationService.getCurrentPosition();
-        // final city = await LocationService.getCityName(
-        //   position.latitude,
-        //   position.longitude,
-        // );
-        // final forecast = await hourlyForecastRepository.getHourlyForecast(city);
-        final forecast = await hourlyForecastRepository.getHourlyForecast(event.city);
+        List<HourlyForecast>? forecast;
+        if (event.city != null) {
+          forecast = await hourlyForecastRepository.getHourlyForecast(event.city!);
+        }
+        else {
+          final position = await LocationService.getCurrentPosition();
+          forecast = await hourlyForecastRepository.getHourlyForecastByCoordinates(position.latitude, position.longitude);
+        }
         emit(HourlyForecastLoaded(forecast));
       } catch (e) {
         emit(HourlyForecastLoadingError());
