@@ -5,8 +5,10 @@ import 'package:test_flutter_app/model/current_weather.dart';
 import '../blocs/current_weather_bloc/current_weather_bloc.dart';
 
 class WeatherAtThisMoment extends StatelessWidget {
+  final String city;
 
   const WeatherAtThisMoment({
+    required this.city,
     super.key,
   });
 
@@ -25,7 +27,7 @@ class WeatherAtThisMoment extends StatelessWidget {
   }
 
   Widget _handleInitialState(BuildContext context) {
-    context.read<CurrentWeatherBloc>().add(FetchCurrentWeather("Moscow"));
+    context.read<CurrentWeatherBloc>().add(FetchCurrentWeather(city));
     return const Center(child: CircularProgressIndicator());
   }
   Widget _showCurrentWeather(CurrentWeather currentWeather) {

@@ -5,7 +5,8 @@ import 'package:test_flutter_app/model/hourly_forecast.dart';
 import '../blocs/hourly_forecast_bloc/hourly_forecast_bloc.dart';
 
 class HourlyForecastList extends StatelessWidget {
-  const HourlyForecastList({super.key});
+  final String city;
+  const HourlyForecastList({required this.city, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class HourlyForecastList extends StatelessWidget {
     );
   }
   Widget _handleInitialState(BuildContext context) {
-    context.read<HourlyForecastBloc>().add(FetchHourlyForecast("Moscow"));
+    context.read<HourlyForecastBloc>().add(FetchHourlyForecast(city));
     return const Center(child: CircularProgressIndicator());
   }
   Widget _buildForecastList(List<HourlyForecast> forecast) {

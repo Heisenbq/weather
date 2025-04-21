@@ -5,7 +5,8 @@ import '../blocs/daily_forecast_bloc/daily_forecast_bloc.dart';
 import '../model/daily_forecast.dart';
 
 class DailyForecastList extends StatelessWidget {
-  const DailyForecastList({super.key});
+  final String city;
+  const DailyForecastList({required this.city, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class DailyForecastList extends StatelessWidget {
   }
 
   Widget _handleInitialState(BuildContext context) {
-    context.read<DailyForecastBloc>().add(FetchDailyForecast("Moscow"));
+    context.read<DailyForecastBloc>().add(FetchDailyForecast(city));
     return const Center(child: CircularProgressIndicator());
   }
 
