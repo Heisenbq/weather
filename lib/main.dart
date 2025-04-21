@@ -22,13 +22,13 @@ class WeatherApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<HourlyForecastBloc>(
-          create: (context) => HourlyForecastBloc(WeatherRepository(WeatherApi.instance)),
+          create: (context) => HourlyForecastBloc(WeatherRepository(WeatherApi())),
         ),
         BlocProvider<DailyForecastBloc>(
-          create: (context) => DailyForecastBloc(WeatherRepository(WeatherApi.instance)),
+          create: (context) => DailyForecastBloc(WeatherRepository(WeatherApi())),
         ),
         BlocProvider<CurrentWeatherBloc>(
-          create: (context) => CurrentWeatherBloc(WeatherRepository(WeatherApi.instance)),
+          create: (context) => CurrentWeatherBloc(WeatherRepository(WeatherApi())),
         ),
       ],
       child: MaterialApp(

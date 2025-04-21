@@ -6,11 +6,9 @@ import '../model/current_weather.dart';
 import '../model/daily_forecast.dart';
 
 class WeatherApi {
-  WeatherApi._internal();
-
-  static final WeatherApi _instance = WeatherApi._internal();
-
-  static WeatherApi get instance => _instance;
+  WeatherApi._();
+  static final WeatherApi _instance = WeatherApi._();
+  factory WeatherApi() => _instance;
 
   final Dio _dio = Dio();
   final String _apiKey = 'a0e508f45eed10d76be37cc08bfab391';

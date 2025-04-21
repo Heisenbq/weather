@@ -27,7 +27,7 @@ class DailyForecastList extends StatelessWidget {
   }
 
   Widget _handleInitialState(BuildContext context) {
-    context.read<DailyForecastBloc>().add(FetchDailyForecast());
+    context.read<DailyForecastBloc>().add(FetchDailyForecast("Moscow"));
     return const Center(child: CircularProgressIndicator());
   }
 
