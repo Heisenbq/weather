@@ -4,11 +4,16 @@ import '../widgets/daily_forecast_list.dart';
 import '../widgets/hourly_forecast_list.dart';
 import '../widgets/weather_at_this_moment.dart';
 
-class WeatherPage extends StatelessWidget {
+class WeatherPage extends StatefulWidget {
   String city;
 
   WeatherPage({super.key, required this.city});
 
+  @override
+  State<WeatherPage> createState() => _WeatherPageState();
+}
+
+class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +33,8 @@ class WeatherPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 75),
-                WeatherAtThisMoment(city: city),
+                Text("${widget.city}"),
+                WeatherAtThisMoment(city: widget.city),
                 const SizedBox(height: 24),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -36,7 +42,7 @@ class WeatherPage extends StatelessWidget {
                     color: Color(0xFF2270BB),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: HourlyForecastList(city: city),
+                  child: HourlyForecastList(city: widget.city),
                 ),
                 const SizedBox(height: 32),
                 Expanded(
@@ -46,7 +52,7 @@ class WeatherPage extends StatelessWidget {
                       color: Color(0xFF2270BB),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: DailyForecastList(city: city),
+                    child: DailyForecastList(city: widget.city),
                   ),
                 ),
               ],

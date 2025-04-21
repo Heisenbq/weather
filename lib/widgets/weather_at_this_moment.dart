@@ -5,9 +5,9 @@ import 'package:test_flutter_app/model/current_weather.dart';
 import '../blocs/current_weather_bloc/current_weather_bloc.dart';
 
 class WeatherAtThisMoment extends StatelessWidget {
-  final String city;
+  String city;
 
-  const WeatherAtThisMoment({
+  WeatherAtThisMoment({
     required this.city,
     super.key,
   });
