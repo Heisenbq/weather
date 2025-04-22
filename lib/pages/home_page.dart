@@ -128,9 +128,9 @@ class _HomePageState extends State<HomePage> {
 class _CityCard extends StatelessWidget {
   final City city;
   final VoidCallback onTap;
-  final ValueChanged<City> onDismissed;
 
-  const _CityCard({required this.city, required this.onTap,required this.onDismissed});
+
+  const _CityCard({required this.city, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +143,7 @@ class _CityCard extends StatelessWidget {
         // Опционально: показать диалог подтверждения
         return await _showDeleteConfirmation(context);
       },
-      onDismissed: (_) => onDismissed(city),
+      onDismissed: (_) => () {},
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
