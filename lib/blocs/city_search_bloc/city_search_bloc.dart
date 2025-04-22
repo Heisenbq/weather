@@ -38,10 +38,16 @@ class CitySearchBloc extends Bloc<CitySearchEvent, CitySearchState> {
 
     on<DeleteCity>((event, emit) async {
       repository.deleteCity(event.city);
-      print(1);
       emit(CitySearchInitial(repository.getAddedCities()));
     });
 
+
+    on<ToggleCityFavorite>((event, emit) async {
+      print(2);
+      repository.toggleFavorite(event.city);
+      print(1);
+      emit(CitySearchInitial(repository.getAddedCities()));
+    });
 
 
 

@@ -3,7 +3,7 @@
 class City implements Comparable<City>{
   final String name;
   final String country;
-  final bool favorite;
+  bool favorite;
 
   City({
     required this.name,
@@ -25,15 +25,11 @@ class City implements Comparable<City>{
 
   @override
   int compareTo(City other) {
-    // return name.compareTo(other.name);
 
-      if (favorite && !other.favorite) {
-        return 1;
-      } else if (!favorite && other.favorite) {
-        return -1;
-      } else {
-        return name.compareTo(other.name);
-      }
+    if (favorite != other.favorite) {
+      return other.favorite ? 1 : -1;
+    }
+    return name.compareTo(other.name);
 
   }
 
@@ -45,10 +41,8 @@ class City implements Comparable<City>{
               name == other.name &&
               country == other.country;
 
-  // @override
-  // int get hashCode {
-  //   return super.hashCode();
-  // }
+  @override
+  int get hashCode => name.hashCode ^ country.hashCode;
 
 
 }

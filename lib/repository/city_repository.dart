@@ -28,11 +28,16 @@ class CityRepository {
   }
 
   void deleteCity (City city) {
-    print(city.toString());
     if (!cities.contains(city)) return;
     cities.remove(city);
   }
-  
 
+
+  void toggleFavorite(City city) {
+    final index = cities.indexWhere((c) => c.name == city.name && c.country == city.country);
+    if (index != -1) {
+      cities[index].favorite = !cities[index].favorite;
+    }
+  }
 
 }

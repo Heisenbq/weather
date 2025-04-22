@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                                       builder:
                                           (context) => WeatherPage(
                                             key: ValueKey(item.name),
-                                            city: item.name,
+                                            city: item,
                                           ),
                                     ),
                                   );

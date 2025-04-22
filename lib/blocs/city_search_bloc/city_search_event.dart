@@ -22,3 +22,10 @@ class DeleteCity extends CitySearchEvent {
 
 
 class GetCities extends CitySearchEvent {}
+
+class ToggleCityFavorite extends CitySearchEvent {
+  final City city;
+
+  ToggleCityFavorite(this.city);
+}
+
