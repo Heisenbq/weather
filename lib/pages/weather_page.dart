@@ -23,24 +23,24 @@ class _WeatherPageState extends State<WeatherPage> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF0B3D91), // глубокий индиго (верх)
-              Color(0xFF0D47A1), // тёмно-синий
-              Color(0xFF1565C0), // насыщенный синий
-              Color(0xFF1976D2), // ярко-синий
-              Color(0xFF1E88E5), // переход к небесному
-              Color(0xFF42A5F5), // нежно-голубой
-              Color(0xFF64B5F6), // ещё светлее
-              Color(0xFF90CAF9), // почти как утреннее небо
+              Color(0xFF0B3D91),
+              Color(0xFF0D47A1),
+              Color(0xFF1565C0),
+              Color(0xFF1976D2),
+              Color(0xFF1E88E5),
+              Color(0xFF42A5F5),
+              Color(0xFF64B5F6),
+              Color(0xFF90CAF9),
             ],
             stops: [
-              0.0,   // верхний (0%)
-              0.05,  // 10%
-              0.15,  // 25%
-              0.25,  // 40%
-              0.50,  // 55%
-              0.70,  // 70%
-              0.85,  // 85%
-              1.0,  // 93%// низ (100%)
+              0.0,
+              0.05,
+              0.15,
+              0.25,
+              0.50,
+              0.70,
+              0.85,
+              1.0,
             ],
           ),
         ),
@@ -88,6 +88,7 @@ class _WeatherPageState extends State<WeatherPage> {
             ),
           ],
         ),
+
       ),
     );
   }

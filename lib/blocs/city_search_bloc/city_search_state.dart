@@ -4,7 +4,11 @@ import '../../model/city.dart';
 
 abstract class CitySearchState {}
 
-class CitySearchInitial extends CitySearchState {}
+class CitySearchInitial extends CitySearchState {
+  final List<City> cities;
+
+  CitySearchInitial(this.cities);
+}
 
 class CitySearchLoading extends CitySearchState {}
 

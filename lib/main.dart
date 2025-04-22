@@ -40,7 +40,7 @@ class WeatherApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Weather App',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: HomePage(cityRepository: CityRepository(WeatherApi())),
+        home: HomePage(),
       ),
     );
   }

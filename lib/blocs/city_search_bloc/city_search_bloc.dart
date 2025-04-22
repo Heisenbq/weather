@@ -6,10 +6,14 @@ import 'city_search_state.dart';
 class CitySearchBloc extends Bloc<CitySearchEvent, CitySearchState> {
   final CityRepository repository;
 
-  CitySearchBloc(this.repository) : super(CitySearchInitial()) {
+  CitySearchBloc(this.repository) : super(CitySearchInitial(repository.getAddedCities())) {
     on<CityTextChanged>((event, emit) async {
       if (event.text.isEmpty) {
-        emit(CitySearchInitial());
+        emit(CitySearchInitial(repository.getAddedCities()));
+        return;
+      }
+      if (event.text.length < 3) {
+        emit(MinSymbols());
         return;
       }
 
@@ -25,7 +29,7 @@ class CitySearchBloc extends Bloc<CitySearchEvent, CitySearchState> {
 
     on<AddCity>((event, emit) async {
       repository.addCity(event.city);
-      emit(CitySearchInitial());
+      emit(CitySearchInitial(repository.getAddedCities()));
     });
 
 
