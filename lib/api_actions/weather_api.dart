@@ -16,17 +16,32 @@ class WeatherApi {
   final String _baseUrl = 'https://api.openweathermap.org/data/2.5';
 
 
+  // Future<List<City>> searchCities(String query) async {
+  //   final response = await _dio.get(
+  //     'http://api.openweathermap.org/geo/1.0/direct',
+  //     queryParameters: {
+  //       'q': query,
+  //       'limit': 10,
+  //       'appid': _apiKey,
+  //     },
+  //   );
+  //
+  //   final List data = response.data;
+  //
+  //   return data.map((e) => City.fromJson(e)).toList();
+  // }
   Future<List<City>> searchCities(String query) async {
     final response = await _dio.get(
-      'http://api.openweathermap.org/geo/1.0/direct',
+      '$_baseUrl/find',
       queryParameters: {
         'q': query,
         'limit': 10,
         'appid': _apiKey,
+        'sort': 'population'
       },
     );
 
-    final List data = response.data;
+    final List<dynamic> data = response.data['list'];
 
     return data.map((e) => City.fromJson(e)).toList();
   }
