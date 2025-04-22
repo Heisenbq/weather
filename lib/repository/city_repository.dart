@@ -26,5 +26,9 @@ class CityRepository {
     if (cities.contains(city)) return;
     cities.add(city);
   }
+  
+  void deleteCity (City city) {
+    if (cities.contains(city))
+  }
 
 }

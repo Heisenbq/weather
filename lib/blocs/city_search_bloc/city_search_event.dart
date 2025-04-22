@@ -14,4 +14,11 @@ class AddCity extends CitySearchEvent {
   AddCity(this.city);
 }
 
+class DeleteCity extends CitySearchEvent {
+  final City city;
+
+  DeleteCity(this.city);
+}
+
+
 class GetCities extends CitySearchEvent {}

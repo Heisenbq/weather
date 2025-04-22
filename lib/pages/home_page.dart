@@ -128,36 +128,78 @@ class _HomePageState extends State<HomePage> {
 class _CityCard extends StatelessWidget {
   final City city;
   final VoidCallback onTap;
+  final ValueChanged<City> onDismissed;
 
-  const _CityCard({required this.city, required this.onTap});
+  const _CityCard({required this.city, required this.onTap,required this.onDismissed});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: Colors.lightBlue,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 8),
-              Text(
-                city.name,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                city.country,
-                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-              ),
-            ],
+    return Dismissible(
+      key: Key('${city.name}_${city.country}'), // Уникальный ключ
+      direction: DismissDirection.horizontal, // Только горизонтальный свайп
+      background: _buildSwipeBackground(),
+      secondaryBackground: _buildSwipeBackground(isLeft: false),
+      confirmDismiss: (_) async {
+        // Опционально: показать диалог подтверждения
+        return await _showDeleteConfirmation(context);
+      },
+      onDismissed: (_) => onDismissed(city),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: Colors.lightBlue,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 8),
+                Text(
+                  city.name,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  city.country,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+  Widget _buildSwipeBackground({bool isLeft = true}) {
+    return Container(
+      color: Colors.red,
+      alignment: isLeft ? Alignment.centerLeft : Alignment.centerRight,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Icon(
+        Icons.delete,
+        color: Colors.white,
+      ),
+    );
+  }
+  Future<bool> _showDeleteConfirmation(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Удалить город?'),
+        content: Text('Вы уверены, что хотите удалить ${city.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Удалить', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
 }
