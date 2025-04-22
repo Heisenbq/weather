@@ -25,6 +25,7 @@ class CitySearchBloc extends Bloc<CitySearchEvent, CitySearchState> {
 
     on<AddCity>((event, emit) async {
       repository.addCity(event.city);
+      emit(CitySearchInitial());
     });
 
 

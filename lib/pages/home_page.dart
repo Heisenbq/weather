@@ -28,53 +28,65 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(horizontal: 15),
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CitySearchWidget(onCitySelected: (city) {
-                  widget.cityRepository.addCity(city);
-                  setState(() {
-                  });
-                },),
-              ),
               Column(
                 children: [
-                  SizedBox(height: 170,),
-                  Row(
+                  const SizedBox(height: 70),
+                  const Row(
                     children: [
                       Expanded(
                         child: Center(
                           child: Text(
                             "Погода",
-                            style: TextStyle(fontSize: 30, color: Colors.white,fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  // Divider(thickness: 2,),
                   Expanded(
                     child: ListView.builder(
                       physics: const ClampingScrollPhysics(),
                       itemCount: cities.length,
                       itemBuilder: (context, index) {
                         final item = cities[index];
-                        return _CityCard(city: item, onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeatherPage(
-                                key: ValueKey(item.name),
-                                city: item.name,
+                        return _CityCard(
+                          city: item,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WeatherPage(
+                                  key: ValueKey(item.name),
+                                  city: item.name,
+                                ),
                               ),
-                            ),
-                          );
-                        },);
+                            );
+                          },
+                        );
                       },
                     ),
-                  )
+                  ),
                 ],
               ),
 
+              Positioned(
+                top: 8,
+                left: 8,
+                right: 8,
+                child: SizedBox(
+                  height: 1000,
+                  child: CitySearchWidget(
+                    onCitySelected: (city) {
+                      widget.cityRepository.addCity(city);
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),

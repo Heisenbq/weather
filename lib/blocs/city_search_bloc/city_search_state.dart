@@ -19,3 +19,7 @@ class CitySearchError extends CitySearchState {
 
   CitySearchError(this.message);
 }
+
+class MinSymbols extends CitySearchState {
+}
+

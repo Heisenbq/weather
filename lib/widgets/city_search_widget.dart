@@ -43,7 +43,8 @@ class CitySearchWidget extends StatelessWidget {
           child: BlocBuilder<CitySearchBloc, CitySearchState>(
             builder: (context, state) {
               if (state is CitySearchInitial) {
-                return const Center(child: Text('Начни вводить название города'));
+                // return const Center(child: Text('Начни вводить название города'));
+                return Text("");
               } else if (state is CitySearchLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is CitySearchLoaded) {
