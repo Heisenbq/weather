@@ -21,6 +21,10 @@ class CitySearchBloc extends Bloc<CitySearchEvent, CitySearchState> {
 
       try {
         final cities = await repository.searchCities(event.text);
+        if (cities.isEmpty) {
+          emit(NothingFound());
+          return;
+        }
         emit(CitySearchLoaded(cities));
       } catch (e) {
         emit(CitySearchError("Ошибка при загрузке"));
@@ -31,6 +35,14 @@ class CitySearchBloc extends Bloc<CitySearchEvent, CitySearchState> {
       repository.addCity(event.city);
       emit(CitySearchInitial(repository.getAddedCities()));
     });
+
+    on<DeleteCity>((event, emit) async {
+      repository.deleteCity(event.city);
+      print(1);
+      emit(CitySearchInitial(repository.getAddedCities()));
+    });
+
+
 
 
   }

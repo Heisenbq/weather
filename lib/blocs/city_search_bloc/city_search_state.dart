@@ -27,3 +27,5 @@ class CitySearchError extends CitySearchState {
 class MinSymbols extends CitySearchState {
 }
 
+class NothingFound extends CitySearchState {}
+

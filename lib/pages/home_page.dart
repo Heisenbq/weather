@@ -10,8 +10,6 @@ import '../blocs/city_search_bloc/city_search_state.dart';
 import '../model/city.dart';
 
 class HomePage extends StatefulWidget {
-  // final CityRepository cityRepository;
-
   const HomePage({super.key});
 
   @override
@@ -19,6 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,19 +28,19 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(horizontal: 15),
           child: Stack(
             children: [
-              CitySearchWidget(),
+              CitySearchWidget(controller: _searchController),
               BlocBuilder<CitySearchBloc, CitySearchState>(
                 builder: (context, state) {
                   if (state is CitySearchInitial) {
                     return Column(
                       children: [
-                        const SizedBox(height: 70),
+                        const SizedBox(height: 80),
                         const Row(
                           children: [
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  "Погода",
+                                  "Weather",
                                   style: TextStyle(
                                     fontSize: 30,
                                     color: Colors.white,
@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
+                        Divider(thickness: 2, color: Colors.white24),
                         Expanded(
                           child: ListView.builder(
                             physics: const ClampingScrollPhysics(),
@@ -82,7 +83,24 @@ class _HomePageState extends State<HomePage> {
                   } else if (state is CitySearchLoaded) {
                     return Column(
                       children: [
-                        SizedBox(height: 70),
+                        const SizedBox(height: 80),
+                        const Row(
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "Founded cities",
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(thickness: 2, color: Colors.white24),
                         Expanded(
                           child: ListView.builder(
                             itemCount: state.cities.length,
@@ -94,6 +112,7 @@ class _HomePageState extends State<HomePage> {
                                   context.read<CitySearchBloc>().add(
                                     AddCity(city),
                                   );
+                                  _searchController.clear();
                                   setState(() {});
                                 },
                               );
@@ -106,8 +125,25 @@ class _HomePageState extends State<HomePage> {
                     return Center(child: Text(state.message));
                   } else if (state is MinSymbols) {
                     return Center(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "In text should be at least 3 symblos",
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (state is NothingFound) {
+                    return Center(
                       child: Text(
-                        "Введите хотя бы 3 символа",
+                        "Nothing found",
                         style: TextStyle(fontSize: 30, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
@@ -129,25 +165,35 @@ class _CityCard extends StatelessWidget {
   final City city;
   final VoidCallback onTap;
 
-
   const _CityCard({required this.city, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key('${city.name}_${city.country}'), // Уникальный ключ
-      direction: DismissDirection.horizontal, // Только горизонтальный свайп
+      key: Key('${city.name}_${city.country}'),
+      direction: DismissDirection.endToStart,
       background: _buildSwipeBackground(),
       secondaryBackground: _buildSwipeBackground(isLeft: false),
       confirmDismiss: (_) async {
-        // Опционально: показать диалог подтверждения
         return await _showDeleteConfirmation(context);
       },
-      onDismissed: (_) => () {},
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: Colors.lightBlue,
+      onDismissed: (_) {
+        context.read<CitySearchBloc>().add(DeleteCity(city));
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFE3F2FD), // светло-голубой
+              Color(0xFFFCE4EC), // нежно-розовый
+              Color(0xFFFFF8E1), // светло-жёлтый
+            ],
+          ),
+        ),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: onTap,
@@ -157,13 +203,35 @@ class _CityCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 8),
-                Text(
-                  city.name,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          city.name,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  city.country,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          city.country,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -172,34 +240,35 @@ class _CityCard extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSwipeBackground({bool isLeft = true}) {
     return Container(
       color: Colors.red,
       alignment: isLeft ? Alignment.centerLeft : Alignment.centerRight,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Icon(
-        Icons.delete,
-        color: Colors.white,
-      ),
+      child: Icon(Icons.delete, color: Colors.white),
     );
   }
+
   Future<bool> _showDeleteConfirmation(BuildContext context) async {
     return await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Удалить город?'),
-        content: Text('Вы уверены, что хотите удалить ${city.name}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Отмена'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Удалить', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    ) ?? false;
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text('Удалить город?'),
+                content: Text('Вы уверены, что хотите удалить ${city.name}?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text('Отмена'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text('Удалить', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
   }
 }

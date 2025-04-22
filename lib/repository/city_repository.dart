@@ -26,6 +26,12 @@ class CityRepository {
     if (cities.contains(city)) return;
     cities.add(city);
   }
+
+  void deleteCity (City city) {
+    print(city.toString());
+    if (!cities.contains(city)) return;
+    cities.remove(city);
+  }
   
 
 
