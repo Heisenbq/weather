@@ -14,7 +14,16 @@ class CitySearchWidget extends StatefulWidget {
 }
 
 class _CitySearchWidgetState extends State<CitySearchWidget> {
-  // final TextEditingController _controller = TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(() {
+      final text = widget.controller.text;
+      context.read<CitySearchBloc>().add(CityTextChanged(text));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +35,7 @@ class _CitySearchWidgetState extends State<CitySearchWidget> {
         fontSize: 18,
       ),
       decoration: InputDecoration(
-        hintText: 'Введите город...',
+        hintText: 'Enter city...',
         hintStyle: const TextStyle(color: Colors.white54),
         prefixIcon: const Icon(Icons.search, color: Colors.white70),
         suffixIcon: widget.controller.text.isNotEmpty
@@ -47,10 +56,10 @@ class _CitySearchWidgetState extends State<CitySearchWidget> {
           borderSide: const BorderSide(color: Colors.white, width: 2),
         ),
       ),
-      onChanged: (text) {
-        context.read<CitySearchBloc>().add(CityTextChanged(text));
-        setState(() {});
-      },
+      // onChanged: (text) {
+      //   context.read<CitySearchBloc>().add(CityTextChanged(text));
+      //   setState(() {});
+      // },
     );
   }
 }
