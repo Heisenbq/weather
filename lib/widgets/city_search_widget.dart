@@ -17,9 +17,23 @@ class CitySearchWidget extends StatelessWidget {
     return Column(
       children: [
         TextField(
-          decoration: const InputDecoration(
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w400,
+            fontSize: 18,
+          ),
+          decoration: InputDecoration(
             hintText: 'Введите город...',
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: Icon(Icons.search
+            ),
+            filled: true,
+            fillColor: Colors.white12,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(24),
+              borderSide: BorderSide(color: Colors.white, width: 2)
+
+            ),
           ),
           onChanged: (text) {
             context.read<CitySearchBloc>().add(CityTextChanged(text));

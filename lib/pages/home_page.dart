@@ -21,56 +21,60 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     List<City> cities = widget.cityRepository.cities;
-    print(cities);
     return Scaffold(
       backgroundColor: Colors.black38,
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
+          child: Stack(
             children: [
-
-              Expanded(
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: CitySearchWidget(onCitySelected: (city) {
                   widget.cityRepository.addCity(city);
                   setState(() {
                   });
                 },),
               ),
-              // CitySearchWidget(),
-              Row(
+              Column(
                 children: [
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        "Погода",
-                        style: TextStyle(fontSize: 30, color: Colors.white,fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Divider(thickness: 2,),
-              Expanded(
-                child: ListView.builder(
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: cities.length,
-                  itemBuilder: (context, index) {
-                    final item = cities[index];
-                    return _CityCard(city: item, onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WeatherPage(
-                            key: ValueKey(item.name),
-                            city: item.name,
+                  SizedBox(height: 170,),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "Погода",
+                            style: TextStyle(fontSize: 30, color: Colors.white,fontWeight: FontWeight.w600),
                           ),
                         ),
-                      );
-                    },);
-                  },
-                ),
-              )
+                      ),
+                    ],
+                  ),
+                  // Divider(thickness: 2,),
+                  Expanded(
+                    child: ListView.builder(
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: cities.length,
+                      itemBuilder: (context, index) {
+                        final item = cities[index];
+                        return _CityCard(city: item, onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WeatherPage(
+                                key: ValueKey(item.name),
+                                city: item.name,
+                              ),
+                            ),
+                          );
+                        },);
+                      },
+                    ),
+                  )
+                ],
+              ),
+
             ],
           ),
         ),
