@@ -15,7 +15,7 @@ void main() {
 }
 
 class WeatherApp extends StatelessWidget {
-  WeatherApp({super.key});
+  const WeatherApp({super.key});
 
   @override
   Widget build(BuildContext context) {

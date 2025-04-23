@@ -38,7 +38,7 @@ class _CitySearchWidgetState extends State<CitySearchWidget> {
         hintText: 'Enter city...',
         hintStyle: const TextStyle(color: Colors.white54),
         prefixIcon: const Icon(Icons.search, color: Colors.white70),
-        suffixIcon: widget.controller.text.isNotEmpty
+        suffixIcon: widget.controller.text.isEmpty
             ? IconButton(
           icon: const Icon(Icons.clear, color: Colors.white70),
           onPressed: () {

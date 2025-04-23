@@ -199,39 +199,51 @@ class _CityCard extends StatelessWidget {
           onTap: onTap,
           child: Padding(
             padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
               children: [
-                SizedBox(height: 8),
-                Row(
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          city.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                    SizedBox(height: 8),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              city.name,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              city.country,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          city.country,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                Positioned(
+                  right: 10,
+                  top: 8,
+                  child:                 city.favorite
+                      ? Icon(Icons.star, color: Colors.yellow, size: 40) : Icon(Icons.star, color: Colors.yellow.withAlpha(0), size: 40)
+
                 ),
               ],
             ),
