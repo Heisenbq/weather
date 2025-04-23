@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_flutter_app/model/current_weather.dart';
 
-import '../blocs/current_weather_bloc/current_weather_bloc.dart';
+import '../../../blocs/current_weather_bloc/current_weather_bloc.dart';
 
 class WeatherAtThisMoment extends StatefulWidget {
   final String city;

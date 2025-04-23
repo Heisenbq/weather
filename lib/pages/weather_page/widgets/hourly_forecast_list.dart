@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_flutter_app/model/hourly_forecast.dart';
 
-import '../blocs/hourly_forecast_bloc/hourly_forecast_bloc.dart';
+import '../../../blocs/hourly_forecast_bloc/hourly_forecast_bloc.dart';
 
 class HourlyForecastList extends StatefulWidget {
   final String city;

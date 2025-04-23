@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/city_search_bloc/city_search_bloc.dart';
-import '../blocs/city_search_bloc/city_search_event.dart';
-import '../model/city.dart';
-import '../widgets/daily_forecast_list.dart';
-import '../widgets/hourly_forecast_list.dart';
-import '../widgets/weather_at_this_moment.dart';
+import '../../blocs/city_search_bloc/city_search_bloc.dart';
+import '../../blocs/city_search_bloc/city_search_event.dart';
+import '../../model/city.dart';
+import 'widgets/daily_forecast_list.dart';
+import 'widgets/hourly_forecast_list.dart';
+import 'widgets/weather_at_this_moment.dart';
 
 class WeatherPage extends StatefulWidget {
   final City city;
@@ -48,24 +48,10 @@ class _WeatherPageState extends State<WeatherPage> {
                 const SizedBox(height: 75),
                 WeatherAtThisMoment(city: widget.city.name),
                 const SizedBox(height: 24),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  decoration: BoxDecoration(
-                    color: Color(0xFF2270BB),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: HourlyForecastList(city: widget.city.name),
-                ),
+                ContainerWithCloudBackground(child: HourlyForecastList(city: widget.city.name)),
                 const SizedBox(height: 32),
                 Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF2270BB),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: DailyForecastList(city: widget.city.name),
-                  ),
+                  child: ContainerWithCloudBackground(child: DailyForecastList(city: widget.city.name)),
                 ),
               ],
             ),
@@ -96,6 +82,24 @@ class _WeatherPageState extends State<WeatherPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class ContainerWithCloudBackground extends StatelessWidget {
+  final Widget child;
+  const ContainerWithCloudBackground ({super.key,required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      decoration: BoxDecoration(
+        color: Color(0xFF2270BB),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: child,
     );
   }
 }

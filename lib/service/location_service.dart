@@ -15,7 +15,6 @@ class LocationService {
         throw Exception('Location permissions are denied');
       }
     }
-
     return await Geolocator.getCurrentPosition();
   }
 

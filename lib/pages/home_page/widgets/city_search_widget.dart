@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../blocs/city_search_bloc/city_search_bloc.dart';
-import '../blocs/city_search_bloc/city_search_event.dart';
+import '../../../blocs/city_search_bloc/city_search_bloc.dart';
+import '../../../blocs/city_search_bloc/city_search_event.dart';
 
 class CitySearchWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -56,10 +56,6 @@ class _CitySearchWidgetState extends State<CitySearchWidget> {
           borderSide: const BorderSide(color: Colors.white, width: 2),
         ),
       ),
-      // onChanged: (text) {
-      //   context.read<CitySearchBloc>().add(CityTextChanged(text));
-      //   setState(() {});
-      // },
     );
   }
 }

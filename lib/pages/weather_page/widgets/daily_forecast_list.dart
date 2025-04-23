@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/daily_forecast_bloc/daily_forecast_bloc.dart';
-import '../model/daily_forecast.dart';
+import '../../../blocs/daily_forecast_bloc/daily_forecast_bloc.dart';
+import '../../../model/daily_forecast.dart';
 
 class DailyForecastList extends StatefulWidget {
   final String city;

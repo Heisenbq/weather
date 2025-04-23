@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_flutter_app/api_actions/weather_api.dart';
 import 'package:test_flutter_app/blocs/current_weather_bloc/current_weather_bloc.dart';
 import 'package:test_flutter_app/blocs/hourly_forecast_bloc/hourly_forecast_bloc.dart';
-import 'package:test_flutter_app/pages/home_page.dart';
+import 'package:test_flutter_app/pages/home_page/home_page.dart';
 import 'package:test_flutter_app/repository/city_repository.dart';
 import 'package:test_flutter_app/repository/weather_repository.dart';
 
